@@ -1,0 +1,562 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Public profile of a LAOCHAT user or creator",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User UID matching auth UID"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "User display name in Lao or English"
+        },
+        "handle": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z0-9_]+$",
+          "description": "Unique username handle"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "User email address"
+        },
+        "avatarUrl": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Avatar image URL"
+        },
+        "bio": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Short creator or user bio"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "creator", "admin"],
+          "description": "User role"
+        },
+        "isVerifiedCreator": {
+          "type": "boolean",
+          "description": "Verified badge for Lao creators"
+        },
+        "followersCount": {
+          "type": "number",
+          "description": "Number of followers"
+        },
+        "followingCount": {
+          "type": "number",
+          "description": "Number of creators followed"
+        },
+        "postsCount": {
+          "type": "number",
+          "description": "Total published posts"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account creation timestamp"
+        }
+      },
+      "required": ["id", "displayName", "handle", "role"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Designated administrator record",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Admin email address"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin"],
+          "description": "Role marker"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Admin grant timestamp"
+        }
+      },
+      "required": ["email", "role"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Social media post (video, image, text, or article)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Post document ID"
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Author UID"
+        },
+        "authorName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Author display name"
+        },
+        "authorHandle": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Author handle"
+        },
+        "authorAvatar": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Author avatar URL"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["video", "image", "text", "article"],
+          "description": "Content type"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Post title or headline"
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 10000,
+          "description": "Post text, caption, or article content"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Image URL or video embed URL"
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Category name in Lao"
+        },
+        "tags": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Comma separated or space separated hashtags"
+        },
+        "likesCount": {
+          "type": "number",
+          "description": "Number of likes"
+        },
+        "commentsCount": {
+          "type": "number",
+          "description": "Number of comments"
+        },
+        "viewsCount": {
+          "type": "number",
+          "description": "Number of views"
+        },
+        "sharesCount": {
+          "type": "number",
+          "description": "Number of shares"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "hidden", "under_review"],
+          "description": "Moderation status"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Post creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Post last update timestamp"
+        }
+      },
+      "required": ["id", "authorId", "authorName", "type", "content", "category", "status"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Comment on a post",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Comment document ID"
+        },
+        "postId": {
+          "type": "string",
+          "description": "Target post ID"
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Author UID"
+        },
+        "authorName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Author display name"
+        },
+        "authorAvatar": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Author avatar URL"
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Comment text"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["id", "postId", "authorId", "authorName", "content"]
+    },
+    "Like": {
+      "title": "Like",
+      "description": "User like record for a post",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique like ID e.g. postId_userId"
+        },
+        "postId": {
+          "type": "string",
+          "description": "Target post ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID who liked"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Like timestamp"
+        }
+      },
+      "required": ["id", "postId", "userId"]
+    },
+    "Follow": {
+      "title": "Follow",
+      "description": "Follow relationship between users",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Follow ID e.g. followerId_creatorId"
+        },
+        "followerId": {
+          "type": "string",
+          "description": "Follower user UID"
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Target creator user UID"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Follow timestamp"
+        }
+      },
+      "required": ["id", "followerId", "creatorId"]
+    },
+    "ViewEvent": {
+      "title": "ViewEvent",
+      "description": "Audited view record for content and analytics",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "View event ID"
+        },
+        "postId": {
+          "type": "string",
+          "description": "Target post ID"
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Author creator UID"
+        },
+        "viewerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Viewer UID or anonymous session"
+        },
+        "durationSeconds": {
+          "type": "number",
+          "description": "Seconds watched/read"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "View timestamp"
+        }
+      },
+      "required": ["id", "postId", "creatorId"]
+    },
+    "Advertisement": {
+      "title": "Advertisement",
+      "description": "Sponsored campaign ad unit",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Ad document ID"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Campaign headline"
+        },
+        "brandName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Sponsor brand name"
+        },
+        "brandLogo": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Sponsor logo URL"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Ad copy"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Ad image or banner URL"
+        },
+        "targetUrl": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Call to action destination URL"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "paused", "completed"],
+          "description": "Campaign status"
+        },
+        "impressionsCount": {
+          "type": "number",
+          "description": "Total ad impressions"
+        },
+        "clicksCount": {
+          "type": "number",
+          "description": "Total clicks"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Ad created timestamp"
+        }
+      },
+      "required": ["id", "title", "brandName", "status"]
+    },
+    "CreatorEarnings": {
+      "title": "CreatorEarnings",
+      "description": "Creator revenue analytics and balances managed by admin/system",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Matches creator UID"
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Creator user UID"
+        },
+        "creatorName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Creator display name"
+        },
+        "totalViews": {
+          "type": "number",
+          "description": "Total all-time views"
+        },
+        "eligibleViews": {
+          "type": "number",
+          "description": "Monetization-eligible views"
+        },
+        "estimatedKip": {
+          "type": "number",
+          "description": "Estimated revenue in Lao Kip (LAK)"
+        },
+        "estimatedUsd": {
+          "type": "number",
+          "description": "Estimated revenue in USD"
+        },
+        "balanceAvailableKip": {
+          "type": "number",
+          "description": "Available balance for payout in LAK"
+        },
+        "totalPaidOutKip": {
+          "type": "number",
+          "description": "Total paid out amount in LAK"
+        },
+        "isMonetized": {
+          "type": "boolean",
+          "description": "Creator monetization eligibility status"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of last earnings audit"
+        }
+      },
+      "required": ["id", "creatorId", "isMonetized"]
+    },
+    "PayoutRequest": {
+      "title": "PayoutRequest",
+      "description": "Creator request for monetization payout pending admin verification",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Payout request ID"
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Creator UID requesting payout"
+        },
+        "creatorName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Creator display name"
+        },
+        "amountKip": {
+          "type": "number",
+          "description": "Requested amount in LAK"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["bcel_one", "ldb", "bank_transfer"],
+          "description": "Lao payment method e.g. BCEL One"
+        },
+        "accountNumber": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Bank account or phone number"
+        },
+        "accountName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Account holder name"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"],
+          "description": "Review status"
+        },
+        "adminNotes": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Admin review note"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Submission timestamp"
+        }
+      },
+      "required": ["id", "creatorId", "amountKip", "paymentMethod", "accountNumber", "accountName", "status"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Content moderation report submitted by a user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Report ID"
+        },
+        "postId": {
+          "type": "string",
+          "description": "Reported post ID"
+        },
+        "postTitle": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Reported post title/content summary"
+        },
+        "reporterId": {
+          "type": "string",
+          "description": "Reporter UID"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Reason for report in Lao"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "reviewed", "dismissed"],
+          "description": "Moderation status"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Report timestamp"
+        }
+      },
+      "required": ["id", "postId", "reporterId", "reason", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "#/entities/User",
+      "description": "User public profiles and creator stats"
+    },
+    "/admins/{adminId}": {
+      "schema": "#/entities/Admin",
+      "description": "Designated system administrators list"
+    },
+    "/posts/{postId}": {
+      "schema": "#/entities/Post",
+      "description": "Public social content feed items"
+    },
+    "/comments/{commentId}": {
+      "schema": "#/entities/Comment",
+      "description": "Discussion comments on posts"
+    },
+    "/likes/{likeId}": {
+      "schema": "#/entities/Like",
+      "description": "Like relations on posts"
+    },
+    "/follows/{followId}": {
+      "schema": "#/entities/Follow",
+      "description": "User follow relationships"
+    },
+    "/viewEvents/{viewId}": {
+      "schema": "#/entities/ViewEvent",
+      "description": "Content view analytics events"
+    },
+    "/advertisements/{adId}": {
+      "schema": "#/entities/Advertisement",
+      "description": "Sponsored ads for platform monetization"
+    },
+    "/creatorEarnings/{creatorId}": {
+      "schema": "#/entities/CreatorEarnings",
+      "description": "Creator revenue performance and estimated earnings"
+    },
+    "/payoutRequests/{requestId}": {
+      "schema": "#/entities/PayoutRequest",
+      "description": "Creator payout requests needing admin review"
+    },
+    "/reports/{reportId}": {
+      "schema": "#/entities/Report",
+      "description": "User moderation flags on content"
+    }
+  }
+}
